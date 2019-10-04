@@ -20,10 +20,6 @@
 				<param name="android-package" value="com.cyph.cordova.Chooser" />
 			</feature>
 		</config-file>
-		
-		<edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
-			<application android:largeHeap="true" />
-		</edit-config>
 	</platform>
 
 	<platform name="ios">
