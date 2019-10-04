@@ -106,8 +106,7 @@ public class Chooser extends CordovaPlugin {
 
 					if (uri != null) {
 						ContentResolver contentResolver =
-							this.cordova.getActivity().getContentResolver()
-						;
+							this.cordova.getActivity().getContentResolver();
 
 						String name = Chooser.getDisplayName(contentResolver, uri);
 
@@ -116,15 +115,17 @@ public class Chooser extends CordovaPlugin {
 							mediaType = "application/octet-stream";
 						}
 
+						/*
 						byte[] bytes = Chooser.getBytesFromInputStream(
 							contentResolver.openInputStream(uri)
 						);
 
 						String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+						*/
 
 						JSONObject result = new JSONObject();
 
-						result.put("data", base64);
+						//result.put("data", base64);
 						result.put("mediaType", mediaType);
 						result.put("name", name);
 						result.put("uri", uri.toString());
