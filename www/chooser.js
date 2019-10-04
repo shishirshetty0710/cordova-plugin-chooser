@@ -48,10 +48,10 @@ module.exports = {
 
                     try {
                         var o = JSON.parse(json);
-                        var base64Data = o.data.replace(/[^A-Za-z0-9\+\/]/g, '');
+                        // var base64Data = o.data.replace(/[^A-Za-z0-9\+\/]/g, '');
 
-                        o.data = from_base64(base64Data);
-                        o.dataURI = 'data:' + o.mediaType + ';base64,' + base64Data;
+                        // o.data = from_base64(base64Data);
+                        // o.dataURI = 'data:' + o.mediaType + ';base64,' + base64Data;
 
                         resolve(o);
                     }
