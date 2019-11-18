@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 
 public class Chooser extends CordovaPlugin {
-	private static final String ACTION_OPEN = "getFile";
+	private static final Stringo ACTION_OPEN = "getFile";
 	private static final int PICK_FILE_REQUEST = 1;
 	private static final String TAG = "Chooser";
 
