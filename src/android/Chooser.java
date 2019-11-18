@@ -66,7 +66,7 @@ public class Chooser extends CordovaPlugin {
 	}
 
 	@Override
-	private void onActivityResult (int requestCode, int resultCode, Intent data) {
+	public void onActivityResult (int requestCode, int resultCode, Intent data) {
 		try {
 			if (requestCode == Chooser.PICK_FILE_REQUEST && this.callback != null) {
 				if (resultCode == Activity.RESULT_OK) {
@@ -108,7 +108,7 @@ public class Chooser extends CordovaPlugin {
 		}
 	}
 
-	private static JSONObject getFileFromUri (ContentResolver contentResolver, Uri uri) {
+	private static JSONObject getFileFromUri (ContentResolver contentResolver, Uri uri) throws JSONException {
 		JSONObject result = new JSONObject();
 
 		String name = Chooser.getDisplayName(contentResolver, uri);
