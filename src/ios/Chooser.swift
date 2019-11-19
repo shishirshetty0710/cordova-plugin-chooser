@@ -103,7 +103,7 @@ class Chooser : CDVPlugin {
 	func documentWasSelected (urls: [URL]) {
 		var error: NSError?
 
-		let result = [File]()
+		var result = [File]()
 
 		do {
 			for url in urls {
