@@ -7,12 +7,69 @@ import Foundation
 class Chooser : CDVPlugin {
 	var commandCallback: String?
 
-	func callPicker (utis: [String]) {
+	@objc(getFile:)
+	func getFile (command: CDVInvokedUrlCommand) {
+		self.commandCallback = command.callbackId
+
+		let accept = command.arguments.first as! String
+		let allowMultiple = command.arguments[1] as! Bool
+		self.getFilesInternal(accept: accept, allowMultiple: allowMultiple)
+	}
+
+	@objc(getFiles:)
+	func getFiles (command: CDVInvokedUrlCommand) {
+		self.commandCallback = command.callbackId
+
+		let accept = command.arguments.first as! String
+		let allowMultiple = command.arguments[1] as! Bool
+		self.getFilesInternal(accept: accept, allowMultiple: allowMultiple)
+	}
+
+	func getFilesInternal (accept: String, allowMultiple: Bool) {
+		let mimeTypes = accept.components(separatedBy: ",")
+
+		let utis = mimeTypes.map { (mimeType: String) -> String in
+			switch mimeType {
+				case "audio/*":
+					return kUTTypeAudio as String
+				case "font/*":
+					return "public.font"
+				case "image/*":
+					return kUTTypeImage as String
+				case "text/*":
+					return kUTTypeText as String
+				case "video/*":
+					return kUTTypeVideo as String
+				default:
+					break
+			}
+
+			if mimeType.range(of: "*") == nil {
+				let utiUnmanaged = UTTypeCreatePreferredIdentifierForTag(
+					kUTTagClassMIMEType,
+					mimeType as CFString,
+					nil
+				)
+
+				if let uti = (utiUnmanaged?.takeRetainedValue() as? String) {
+					if !uti.hasPrefix("dyn.") {
+						return uti
+					}
+				}
+			}
+
+			return kUTTypeData as String
+		}
+
+		self.callPicker(utis: utis, allowMultiple: allowMultiple)
+	}
+
+	func callPicker (utis: [String], allowMultiple: Bool) {
 		let picker = UIDocumentPickerViewController(documentTypes: utis, in: .import)
 		picker.delegate = self
 		self.viewController.present(picker, animated: false) {
 			if #available(iOS 11.0, *) {
-				picker.allowsMultipleSelection = true;
+				picker.allowsMultipleSelection = allowMultiple;
 			}
 		}
 	}
@@ -83,48 +140,7 @@ class Chooser : CDVPlugin {
 		url.stopAccessingSecurityScopedResource()
 	}
 
-	@objc(getFile:)
-	func getFile (command: CDVInvokedUrlCommand) {
-		self.commandCallback = command.callbackId
-
-		let accept = command.arguments.first as! String
-		let mimeTypes = accept.components(separatedBy: ",")
-
-		let utis = mimeTypes.map { (mimeType: String) -> String in
-			switch mimeType {
-				case "audio/*":
-					return kUTTypeAudio as String
-				case "font/*":
-					return "public.font"
-				case "image/*":
-					return kUTTypeImage as String
-				case "text/*":
-					return kUTTypeText as String
-				case "video/*":
-					return kUTTypeVideo as String
-				default:
-					break
-			}
-
-			if mimeType.range(of: "*") == nil {
-				let utiUnmanaged = UTTypeCreatePreferredIdentifierForTag(
-					kUTTagClassMIMEType,
-					mimeType as CFString,
-					nil
-				)
-
-				if let uti = (utiUnmanaged?.takeRetainedValue() as? String) {
-					if !uti.hasPrefix("dyn.") {
-						return uti
-					}
-				}
-			}
-
-			return kUTTypeData as String
-		}
-
-		self.callPicker(utis: utis)
-	}
+	
 
 	func send (_ message: String, _ status: CDVCommandStatus = CDVCommandStatus_OK) {
 		if let callbackId = self.commandCallback {
