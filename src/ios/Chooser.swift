@@ -8,7 +8,7 @@ class Chooser : CDVPlugin {
 	var commandCallback: String?
 
 	func callPicker (utis: [String]) {
-		let picker = UIDocumentMenuViewController(documentTypes: utis, in: .import)
+		let picker = UIDocumentPickerViewController(documentTypes: utis, in: .import)
 		picker.delegate = self
 		self.viewController.present(picker, animated: true, completion: nil)
 	}
