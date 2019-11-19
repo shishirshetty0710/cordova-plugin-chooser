@@ -7,6 +7,17 @@ import Foundation
 class Chooser : CDVPlugin {
 	var commandCallback: String?
 
+	class File {
+		var name: String
+		var mimeType: String
+		var uri: String
+		init(name: String, mimeType: String, uri: String) {
+			self.name = name
+			self.mimeType = mimeType
+			self.uri = uri
+		}
+	}
+
 	@objc(getFile:)
 	func getFile (command: CDVInvokedUrlCommand) {
 		self.commandCallback = command.callbackId
@@ -89,53 +100,52 @@ class Chooser : CDVPlugin {
 		return "application/octet-stream"
 	}
 
-	func documentWasSelected (url: URL) {
+	func documentWasSelected (urls: [URL]) {
 		var error: NSError?
 
-		NSFileCoordinator().coordinate(
-			readingItemAt: url,
-			options: [],
-			error: &error
-		) { newURL in
-			let maybeData = try? Data(contentsOf: newURL, options: [])
+		let result = [File]()
 
-			guard let data = maybeData else {
-				self.sendError("Failed to fetch data.")
-				return
-			}
-
-			do {
-				let result = [
-					"mediaType": self.detectMimeType(newURL),
-					"name": newURL.lastPathComponent,
-					"uri": newURL.absoluteString
-				]
-
-				if let message = try String(
-					data: JSONSerialization.data(
-						withJSONObject: result,
-						options: []
-					),
-					encoding: String.Encoding.utf8
-				) {
-					self.send(message)
+		do {
+			for url in urls {
+				NSFileCoordinator().coordinate(
+					readingItemAt: url,
+					options: [],
+					error: &error
+				) { newURL in
+					let maybeData = try? Data(contentsOf: newURL, options: [])
+					
+					do {
+						let file = File(name: newURL.lastPathComponent, mimeType: self.detectMimeType(newURL), uri: newURL.absoluteString)
+						result.append(file)
+						newURL.stopAccessingSecurityScopedResource()
+					}
+					catch let error {
+						self.sendError(error.localizedDescription)
+					}
 				}
-				else {
-					self.sendError("Serializing result failed.")
-				}
+				url.stopAccessingSecurityScopedResource()
+			}
 
-				newURL.stopAccessingSecurityScopedResource()
+			if let message = try String(
+				data: JSONSerialization.data(
+					withJSONObject: result,
+					options: []
+				),
+				encoding: String.Encoding.utf8
+			) {
+				self.send(message)
 			}
-			catch let error {
-				self.sendError(error.localizedDescription)
+			else {
+				self.sendError("Serializing result failed.")
 			}
+		}
+		catch let error {
+			self.sendError(error.localizedDescription)
 		}
 
 		if let error = error {
 			self.sendError(error.localizedDescription)
 		}
-
-		url.stopAccessingSecurityScopedResource()
 	}
 
 	
@@ -167,16 +177,15 @@ extension Chooser : UIDocumentPickerDelegate {
 		_ controller: UIDocumentPickerViewController,
 		didPickDocumentsAt urls: [URL]
 	) {
-		if let url = urls.first {
-			self.documentWasSelected(url: url)
-		}
+		self.documentWasSelected(urls: urls)
 	}
 
 	func documentPicker (
 		_ controller: UIDocumentPickerViewController,
 		didPickDocumentAt url: URL
 	) {
-		self.documentWasSelected(url: url)
+		let urls = [url]
+		self.documentWasSelected(urls: urls)
 	}
 
 	func documentPickerWasCancelled (_ controller: UIDocumentPickerViewController) {
