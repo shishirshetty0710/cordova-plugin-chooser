@@ -10,7 +10,11 @@ class Chooser : CDVPlugin {
 	func callPicker (utis: [String]) {
 		let picker = UIDocumentPickerViewController(documentTypes: utis, in: .import)
 		picker.delegate = self
-		self.viewController.present(picker, animated: true, completion: nil)
+		self.viewController.present(picker, animated: false) {
+			if #available(iOS 11.0, *) {
+				picker.allowsMultipleSelection = true;
+			}
+		}
 	}
 
 	func detectMimeType (_ url: URL) -> String {
