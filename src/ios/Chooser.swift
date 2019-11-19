@@ -12,8 +12,7 @@ class Chooser : CDVPlugin {
 		self.commandCallback = command.callbackId
 
 		let accept = command.arguments.first as! String
-		let allowMultiple = command.arguments[1] as! Bool
-		self.getFilesInternal(accept: accept, allowMultiple: allowMultiple)
+		self.getFilesInternal(accept: accept, allowMultiple: false)
 	}
 
 	@objc(getFiles:)
@@ -21,8 +20,7 @@ class Chooser : CDVPlugin {
 		self.commandCallback = command.callbackId
 
 		let accept = command.arguments.first as! String
-		let allowMultiple = command.arguments[1] as! Bool
-		self.getFilesInternal(accept: accept, allowMultiple: allowMultiple)
+		self.getFilesInternal(accept: accept, allowMultiple: true)
 	}
 
 	func getFilesInternal (accept: String, allowMultiple: Bool) {
