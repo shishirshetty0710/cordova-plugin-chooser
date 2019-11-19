@@ -103,28 +103,18 @@ class Chooser : CDVPlugin {
 	func documentWasSelected (urls: [URL]) {
 		var error: NSError?
 
-		var result = [File]()
+		let result:NSMutableDictionary = NSMutableDictionary()
+		let arr::NSMutableArray = NSMutableArray()
 
 		do {
 			for url in urls {
-				NSFileCoordinator().coordinate(
-					readingItemAt: url,
-					options: [],
-					error: &error
-				) { newURL in
-					let maybeData = try? Data(contentsOf: newURL, options: [])
-					
-					do {
-						let file = File(name: newURL.lastPathComponent, mimeType: self.detectMimeType(newURL), uri: newURL.absoluteString)
-						result.append(file)
-						newURL.stopAccessingSecurityScopedResource()
-					}
-					catch let error {
-						self.sendError(error.localizedDescription)
-					}
-				}
-				url.stopAccessingSecurityScopedResource()
+				let file:NSMutableDictionary = NSMutableDictionary()
+				file.setValue(url.lastPathComponent, forKey: "name")
+				file.setValue(self.detectMimeType(url), forKey: "mimeType")
+				file.setValue(url.absoluteString, forKey: "uri")
+				arr.addObject(file)
 			}
+			result.setObject(arr, "result")
 
 			if let message = try String(
 				data: JSONSerialization.data(
@@ -147,8 +137,6 @@ class Chooser : CDVPlugin {
 			self.sendError(error.localizedDescription)
 		}
 	}
-
-	
 
 	func send (_ message: String, _ status: CDVCommandStatus = CDVCommandStatus_OK) {
 		if let callbackId = self.commandCallback {
