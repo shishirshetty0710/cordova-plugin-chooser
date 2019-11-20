@@ -59,7 +59,8 @@ class Chooser : CDVPlugin {
 			return kUTTypeData as String
 		}
 		
-		print("FileChooserPlugin", utis)
+		let logVar = utis.joined(separator: ",")
+		NSLog( @"text: %@", logVar )
 
 		self.callPicker(utis: utis, allowMultiple: allowMultiple)
 	}
