@@ -58,6 +58,9 @@ class Chooser : CDVPlugin {
 
 			return kUTTypeData as String
 		}
+		
+		NSLog(@"FileChooserPlugin");
+		NSLog(@"%@", utis);
 
 		self.callPicker(utis: utis, allowMultiple: allowMultiple)
 	}
