@@ -7,17 +7,6 @@ import Foundation
 class Chooser : CDVPlugin {
 	var commandCallback: String?
 
-	class File {
-		var name: String
-		var mimeType: String
-		var uri: String
-		init(name: String, mimeType: String, uri: String) {
-			self.name = name
-			self.mimeType = mimeType
-			self.uri = uri
-		}
-	}
-
 	@objc(getFile:)
 	func getFile (command: CDVInvokedUrlCommand) {
 		self.commandCallback = command.callbackId
@@ -104,7 +93,7 @@ class Chooser : CDVPlugin {
 		var error: NSError?
 
 		let result:NSMutableDictionary = NSMutableDictionary()
-		let arr::NSMutableArray = NSMutableArray()
+		let arr:NSMutableArray = NSMutableArray()
 
 		do {
 			for url in urls {
@@ -112,9 +101,9 @@ class Chooser : CDVPlugin {
 				file.setValue(url.lastPathComponent, forKey: "name")
 				file.setValue(self.detectMimeType(url), forKey: "mimeType")
 				file.setValue(url.absoluteString, forKey: "uri")
-				arr.addObject(file)
+				arr.add(file)
 			}
-			result.setObject(arr, "result")
+			result.setValue(arr, forKey: "result")
 
 			if let message = try String(
 				data: JSONSerialization.data(
