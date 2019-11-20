@@ -91,9 +91,7 @@ class Chooser : CDVPlugin {
 
 	func documentWasSelected (urls: [URL]) {
 		var error: NSError?
-
-		let result:NSMutableDictionary = NSMutableDictionary()
-		let arr:NSMutableArray = NSMutableArray()
+		let result:NSMutableArray = NSMutableArray()
 
 		do {
 			for url in urls {
@@ -101,9 +99,8 @@ class Chooser : CDVPlugin {
 				file.setValue(url.lastPathComponent, forKey: "name")
 				file.setValue(self.detectMimeType(url), forKey: "mimeType")
 				file.setValue(url.absoluteString, forKey: "uri")
-				arr.add(file)
+				result.add(file)
 			}
-			result.setValue(arr, forKey: "result")
 
 			if let message = try String(
 				data: JSONSerialization.data(

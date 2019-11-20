@@ -74,22 +74,20 @@ public class Chooser extends CordovaPlugin {
 						ContentResolver contentResolver =
 							this.cordova.getActivity().getContentResolver();
 
-						JSONObject result = new JSONObject();
-						JSONArray arr = new JSONArray();
+						JSONArray result = new JSONArray();
 
 						if (null != data.getClipData()) {
 							for (int i = 0; i < data.getClipData().getItemCount(); i++) {
 								Uri uri = data.getClipData().getItemAt(i).getUri();
 								JSONObject file = getFileFromUri(contentResolver, uri);
-								arr.put(file);
+								result.put(file);
 							}
 						} else {
 							Uri uri = data.getData();
 							JSONObject file = getFileFromUri(contentResolver, uri);
-							arr.put(file);
+							result.put(file);
 						}
 
-						result.put("result", arr);
 						this.callback.success(result.toString());
 					} else {
 						this.callback.error("File URI was null.");
