@@ -59,8 +59,8 @@ class Chooser : CDVPlugin {
 			return kUTTypeData as String
 		}
 
-		if utis.contains("com.apple.iwork.pages.sffpages") {
-			utis.append("com.apple.iwork.pages.pages")
+		if (utis.contains("com.apple.iwork.pages.sffpages")) {
+			utis.append("com.apple.iwork.pages.pages");
 		}
 /*
 		if utis.contains("com.apple.iwork.numbers.sffnumbers") {
