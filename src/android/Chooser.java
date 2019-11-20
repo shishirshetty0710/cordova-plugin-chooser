@@ -117,7 +117,7 @@ public class Chooser extends CordovaPlugin {
 		}
 
 		result.put("name", name);
-		result.put("mediaType", mediaType);
+		result.put("mimeType", mediaType);
 		result.put("uri", uri.toString());
 		return result;
 	}
