@@ -60,7 +60,7 @@ class Chooser : CDVPlugin {
 		}
 		
 		let logVar = utis.joined(separator: ",")
-		NSLog( @"text: %@", logVar )
+		NSLog(“%@”, “FileChooserPlugin \(utis)”)
 
 		self.callPicker(utis: utis, allowMultiple: allowMultiple)
 	}
