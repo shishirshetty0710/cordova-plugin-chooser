@@ -26,7 +26,7 @@ class Chooser : CDVPlugin {
 	func getFilesInternal (accept: String, allowMultiple: Bool) {
 		let mimeTypes = accept.components(separatedBy: ",")
 
-		let utis = mimeTypes.map { (mimeType: String) -> String in
+		var utis = mimeTypes.map { (mimeType: String) -> String in
 			switch mimeType {
 				case "audio/*":
 					return kUTTypeAudio as String
@@ -59,14 +59,14 @@ class Chooser : CDVPlugin {
 			return kUTTypeData as String
 		}
 
-		if (utis.contains("com.apple.iwork.pages.sffpages")) {
-			utis.append("com.apple.iwork.pages.pages");
+		if utis.contains("com.apple.iwork.pages.sffpages") {
+			utis.append("com.apple.iwork.pages.pages")
 		}
-/*
+
 		if utis.contains("com.apple.iwork.numbers.sffnumbers") {
 			utis.append("com.apple.iwork.numbers.numbers")
 		}
-	*/	
+		
 		let logVar = utis.joined(separator: ",")
 		NSLog("%@", "FileChooserPlugin \(logVar)")
 
