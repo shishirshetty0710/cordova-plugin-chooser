@@ -30,6 +30,7 @@
 			<feature name="Chooser">
 				<param name="ios-package" value="Chooser" />
 			</feature>
+			<preference name="UseSwiftLanguageVersion" value="5" />
 		</config-file>
 	</platform>
 </plugin>
